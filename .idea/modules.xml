@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/JavaSETest/JavaSETest.iml" filepath="$PROJECT_DIR$/JavaSETest/JavaSETest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/blog-api/blog-api.iml" filepath="$PROJECT_DIR$/blog-api/blog-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/blogSystem.iml" filepath="$PROJECT_DIR$/.idea/blogSystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo/demo.iml" filepath="$PROJECT_DIR$/demo/demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shiroTest/shiroTest.iml" filepath="$PROJECT_DIR$/shiroTest/shiroTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shirodemo/shirodemo.iml" filepath="$PROJECT_DIR$/shirodemo/shirodemo.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,275 @@
+1.vue指令:
+    1.1 v-cloak：使用v-cloak 能够解决插值表达式闪烁的问题，
+       但是要配合style中的display：none、CSS的属性选择器来使用
+    1.2 v-html：可以使带有标签的字符串，其中的标签起到渲染的作用
+
+2.bootstrap相关：
+    2.1 表单元素禁用：
+        <input class="form-control" disabled>
+    2.2 禁用的字段集 fieldset
+        <fieldset disabled>
+            <div class="form-group">
+                <label for="disabledTextInput"  class="col-sm-2 control-label">禁用输入（Fieldset disabled）
+                </label>
+                <div class="col-sm-10">
+                    <input class="form-control">
+                </div>
+            </div>
+        </fieldset>
+    2.3 输入提示：has-success、has-warning、has-error
+        <div class="form-group has-success">
+            <label class="col-sm-2 control-label" for="inputSuccess">
+                输入成功
+            </label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputSuccess">
+            </div>
+        </div>
+
+3.input输入框的onchange事件和oninput事件
+    3.1 input输入框的onchange事件，要在 input 失去焦点的时候才会触发；
+        onchange 事件也可用于单选框与复选框改变后触发的事件。
+    3.2 oninput 事件在用户输入时触发，它是在元素值发生变化时立即触发；
+        该事件在 <input> 或 <textarea> 元素的值发生改变时触发。
+    3.3 获取文本值：
+        3.3.1在HTML文本中：$event.target.value
+        3.3.2在js脚本中（形参event），event.target.value
+        3.3.3jQuery方式：$("").val()
+
+4.vue中使用jquery:
+    4.1安装：npm install jquery --save
+    4.2配置：
+        const webpack = require("webpack")
+        module.exports = {
+            configureWebpack: {
+               plugins: [
+                  new webpack.ProvidePlugin({
+                    $:"jquery",
+                    jQuery:"jquery",
+                    "windows.jQuery":"jquery"
+                  })
+                ]
+            }
+        }
+    4.3在main.js文件夹中引入： import $ from 'jquery'
+
+5.vue-router路由的 scrollBehavior 滚动行为：在点击浏览器的“前进/后退”，或者切换导航的时候触发，
+    设置to页面滚到顶部，或者是保持原先的滚动位置。
+    const router = new VueRouter({
+      routes: [...],
+      scrollBehavior (to, from, savedPosition) {
+        // return 期望滚动到哪个的位置
+      }
+    })
+    to：要进入的目标路由对象，到哪里去
+    from：离开的路由对象，哪里来
+    savePosition：会记录滚动条的坐标，点击前进/后退的时候记录值{x:?,y:?}
+
+6.vuex相关：
+    6.1 mutation 突变的意思
+    6.2.在vue-router使用vuex-store:
+        6.2.1 import store from 'store'
+        6.2.2使用：store.state.id
+
+7.input、textarea去除边框：
+    border: 0;
+    outline: none;
+
+8.容器充满整个屏幕: min-height:100vh
+  设置div元素的高度为当前窗口高度-100px
+       div{
+         height: calc(100vh - 100px);
+      }
+
+9.z-index: -1;/* 使用负值降低优先级 */
+
+10.bootstrap模态框垂直居中：
+    https://www.cnblogs.com/wteam-xq/p/4328332.html
+
+11在html中引用Vuex状态：<h3>{{$store.state.count}}</h3>
+
+12获取路径和参数：
+    完整url可以用 window.location.href
+    路由路径可以用 this.$route.path
+    路由路径参数 this.$route.params 例如：/user/:id → /user/2044011030 → this.$route.params.id
+    路由查询参数 this.$route.query 例如：/user/search?name=sf → this.$route.query.name
+
+13路由中{
+           path: '/login',
+           component: Login,
+           meta: {
+             requireLogin: true
+           }
+         }
+  meta代表自定义元信息，
+  router.beforeEach((to, from, next) => {next()})前置导航守卫：
+  取meta中的数据：to.matched[0].meta.xxx
+
+14.js中的短路与&&和短路或||：
+    14.1最终肯定是返回能够决定真或假的原值
+    14.2布尔运算时，非Boolean值，先转化为Boolean，进行短路判断
+
+15.js中数组相关四大函数：
+    15.1 filter: 返回一个数组
+    15.2 map: 返回一个数组
+    15.3 reduce：汇总函数，返回一个值
+    15.4 对数组中的每个元素都执行一次指定的函数（callback），直到此函数返回 true，
+         如果发现这个元素，some 将返回 true，如果回调函数对每个元素执行后都返回 false ，some 将返回 false。
+         function isBigEnough(element, index, array) {
+             return (element >= 10);
+         }
+         var passed = [2, 5, 8, 1, 4].some(isBigEnough);
+
+16.配置子路由路径时，不能在前面加斜杠
+    {
+        path: '/home',
+        component: Home,
+        children: [
+            {
+                path: 'view',
+                component: ViewBlog,
+                meta: {
+                    title: '详情'
+                }
+            }
+        ]
+    }
+
+17.Vue的watch使用：
+    watch: {
+      a: function (val, oldVal) {
+        console.log('new a: %s, old a: %s', val, oldVal)
+      },
+      // 方法名
+      b: 'someMethod',
+
+      // 深度 watcher， 检测到变化，并打印出c.name变化前后的结果
+      // 'c.name': {
+      //   handler: function (val, oldVal) {
+      //     console.log('new c: %s, old c: %s', val, oldVal);
+      //   },
+      //   deep: true,
+      //   immediate: true,//在组件创建时立即执行
+      // },
+
+      // 报错 必须用c.name，否则在data下不能直接找到name
+      // name: function () {
+      //   console.log('new c: %s, old c: %s', val, oldVal);
+      // }
+
+      // 报错，键值必须是一个字符串，所以用引号括起来
+      // c.name: {
+      //   handler: function (val, oldVal) {
+      //     console.log('new c: %s, old c: %s', val, oldVal);
+      //   },
+      //   deep: true
+      // }
+
+      // 这里未检测到变化
+      // c : {
+      //   handler: function (val, oldVal) {
+      //     console.log('new c: %s, old c: %s', val, oldVal);
+      //   },
+      //   deep: false
+      // },
+
+      // 成功检测到变化
+      // c : {
+      //   handler: function (val, oldVal) {
+      //     console.log('new c: %s, old c: %s', val, oldVal);
+      //   },
+      //   deep: true
+      // },
+
+      // 检测不到变化，因为参数 deep 的默认值是false
+      // c : {
+      //   handler: function (val, oldVal) {
+      //     console.log('new c: %s, old c: %s', val, oldVal);
+      //   },
+      // },
+    }
+
+18.js快速生成数组：
+    function generateArray (start, end) {
+          return Array.from(new Array(end + 1).keys()).slice(start)
+        }
+
+19.阻止点击事件的默认行为：@click.prevent="回调方法名"
+
+20.全局导航守卫定义：
+    router.beforeEach((to, from, next) => {
+      if (to.name !== 'Login' && !isAuthenticated) next({ name: 'Login' })
+      else next()
+    })
+
+    组件导航守卫定义：
+    beforeRouteEnter(to, from, next) {
+        // 在渲染该组件的对应路由被 confirm 前调用
+        // 不！能！获取组件实例 `this`
+        // 因为当守卫执行前，组件实例还没被创建
+        // 通过传一个回调给 next来访问组件实例。
+        // 在导航被确认的时候执行回调，并且把组件实例作为回调方法的参数。
+        next(vm => {
+            // 通过 `vm` 访问组件实例
+        })
+    }
+
+    beforeRouteLeave (to, from, next) {
+      const answer = window.confirm('Do you really want to leave? you have unsaved changes!')
+      if (answer) {
+        next()
+      } else {
+        next(false)
+      }
+    }
+
+21.emmet语法：
+    ul>li{$}*500
+
+22.<a>标签常用样式：
+    a:link{
+        text-decoration:none;
+        cursor:pointer;
+        color:red;
+    }
+
+23.调整图片大小：
+    只设置img的宽/高，则图片会根据设置的宽/高等比例缩放。
+    如果需要限定在一个盒子里，并让图片缩放显示则可以给盒子宽高。然后设置图片的宽高为100%。
+    <div style="width:150px;height:150px">
+        <img src="demo.png" style="width:100%;height:100%">
+    </div>
+
+24.CSS3引入的布局模式Flexbox布局，主要思想是让容器有能力让其子项目能够改变其宽度，高度，
+    以最佳方式填充可用空间。Flex容器使用Flex项目可以自动放大与收缩，用来填补可用的空闲空间。
+
+25.<P>标签css常用2套样式：
+    25.1单行显示：
+        overflow:hidden;
+        text-overflow:ellipsis; /* 加省略号 */
+        white-space:nowrap; /* 强制不换行 */
+
+    25.2多行显示：
+         color: #898a8b;
+            font-size: 18px;
+            border: 1px red solid;
+            line-height: 30px;
+            height: 60px;
+            max-height: 60px;
+            overflow: hidden;/* 超出的文本隐藏 */
+            text-overflow: ellipsis; /* 溢出用省略号显示 */
+            display: -webkit-box; /* 将对象作为弹性伸缩盒子模型显示 */
+            -webkit-box-orient: vertical; /*  从上到下垂直排列子元素（设置伸缩盒子的子元素排列方式） */
+            -webkit-line-clamp: 2; /* 这个属性不是css的规范属性，需要组合上面两个属性，表示显示的行数 */
+
+26.浏览器解决sockJS报错问题：
+    SockJS是一个JavaScript库（用于浏览器），提供类似于WebSocket的对象。
+    其作用就是开发环境下，保证我们在改完代码重新编译之后，能够通知浏览器重新加载变更结果。
+    sockHost: 本地开发环境地址或NGINX服务器监听地址
+    module.exports = {
+        devServer: {
+            sockHost: 'http://localhost:80/',
+            disableHostCheck: true,
+        }
+    }
+

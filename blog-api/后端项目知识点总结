@@ -1,0 +1,106 @@
+1.解决数据库插入中文乱码问题：
+    spring:
+      datasource:
+        url: jdbc:mysql://localhost:3306/oneblog?characterEncoding=utf-8
+
+2.枚举类相关：
+    2.1枚举类是一种特殊的类，它和普通的类一样，有自己的构造器（私有）、成员变量、成员方法
+    2.2枚举类默认继承了 java.lang.Enum 类，并实现了 java.lang.Seriablizable 和 java.lang.Comparable 两个接口
+    2.3枚举类的所有实例(枚举值)必须在枚举类的第一行显式地列出，系统会自动添加 public static final 修饰
+    2.4继承方法：
+        2.4.1 String name()： 返回此枚举实例的名称
+        2.4.2 static values()： 返回一个包含全部枚举值的数组，可以用来遍历所有枚举值
+        2.4.3 String toString()： 默认返回枚举值的名称，与 name 方法类似，也可以重写
+
+3.前后端分离，后端返回值的封装
+    3.1状态码和状态描述符封装：ResultCode
+    3.2状态码和返回数据（map）封装：Result
+
+4.自定义注解：
+    4.1元注解：
+        @Documented 注解信息保留至javadoc中
+        @Target(ElementType.METHOD)
+        @Retention(RetentionPolicy.RUNTIME)
+    4.2声明格式：
+        public @interface LogAnnotation {
+            String module() default "";
+        }
+
+5.serialVersionUID：反序列化兼容版本ID，兼容已被序列化的Java Object
+
+6.@Validated：验证注解，对方法参数进行@NotNull、@NotBlank等验证
+
+7.保存文件路径：兼容开发和部署环境：
+    7.1 File path = new File(ResourceUtils.getURL("classpath:").getPath());
+        在开发测试模式时，得到的地址为：{项目跟目录}/target/classes/
+        在打包成jar正式发布时，得到的地址为：{发布jar包目录}/
+    7.2 如果上传目录为/static/image/adavar/，则可以如下获取：
+        File upload = new File(path.getAbsolutePath(), "static/image/adavar/");
+    7.3 以jar包发布时，我们存储的路径是与jar包同级的static目录，
+        因此我们需要在jar包目录的application.properties配置文件中设置静态资源路径
+        spring.resources.static-locations=classpath:static/,file:static/
+
+8.TINYBLOB, TINYTEXT, char      L + 1 bytes, where L < 2^8    (255 Bytes)
+
+  BLOB, TEXT, varchar               L + 2 bytes, where L < 2^16   (64 Kilobytes)
+
+  MEDIUMBLOB, MEDIUMTEXT   L + 3 bytes, where L < 2^24   (16 Megabytes)
+
+  LONGBLOB, LONGTEXT       L + 4 bytes, where L < 2^32   (4 Gigabytes)
+
+9.列表转数组： String[] array = testList.toArray(new String[testList.size()]);
+            或Object[] array = testList.toArray();
+  数组转列表：List<String> list = Arrays.asList(arrays);
+
+10.数据库相关：
+    10.1 update sql语句：UPDATE table_name
+                      SET column1=value1,column2=value2,...
+                      WHERE some_column=some_value;
+    10.2 mybatis-plus的条件查询和更新：
+        10.2.1 QueryWrapper：
+            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+            queryWrapper.select("id", "nickname", "adavar").eq("id", article.getAuthorId());
+            User author = userService.getOne(queryWrapper);
+        10.2.2 UpdateWrapper：
+            UpdateWrapper<Article> updateWrapper = new UpdateWrapper<>();
+            String updateSql = "view_counts = view_counts + 1";
+            updateWrapper.setSql(updateSql).eq("id", id);
+            articleService.update(updateWrapper);
+
+11.MySQL为字段设置初值：
+    CREATE TABLE test(
+        i_a int NOT NULL DEFAULT 1,
+        ts_b timestamp NOT NULL DEFAULT NOW(),
+        c_c char(2) NOT NULL DEFAULT '1'
+    )
+
+12.左连接语法：实质：将from子句中的两个表分解出来，效率更高
+    SELECT a.title, c.name, c.description
+    FROM article a
+    left join category c
+    on a.category = c.name;
+
+13.子查询：可以出现在3个地方：select、from、where字句中，通常用小括号将其包裹起来
+    如出现在left join(相当于from)字句中：
+        select c.*, b.counts
+        from category c
+        left join (select count(*) counts, category
+        from article
+        group by category) b
+        on c.name = b.category;
+
+14.mybatis-plus自定义多表查询：
+    public interface CategoryMapper extends BaseMapper<Category>{
+        String childQuerySql = "select count(*) counts, category " +
+                                "from article " +
+                                "group by category";
+        String querySql = "select c.*, b.counts " +
+                          "from category c " +
+                          "left JOIN (" + childQuerySql + ") b " +
+                          "on c.name = b.category";
+
+        @Select(querySql)
+        List<Category> selectCategoryInfo(@Param("ew") Wrapper<Article> queryWrapper);
+    }
+
+
